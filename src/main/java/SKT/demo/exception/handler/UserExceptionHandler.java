@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class UserExceptionHandler {
     @ExceptionHandler(UserException.class)
-    public ResponseEntity<UserErrorResponse> handleMemberException(UserException e) {
+    protected ResponseEntity<UserErrorResponse> handleUserException(UserException e) {
         return UserErrorResponse.toResponseEntity(e.getUserErrorMessage());
     }
 }

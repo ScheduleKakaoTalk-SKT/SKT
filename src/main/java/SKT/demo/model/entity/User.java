@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -21,4 +22,7 @@ public class User {
     private String password;
     @Column(unique = true, nullable = false)
     private String nickname;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "id")
+    private Friendship friendship;
 }

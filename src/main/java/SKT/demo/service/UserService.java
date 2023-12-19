@@ -4,15 +4,18 @@ import SKT.demo.config.JwtTokenProvider;
 import SKT.demo.exception.error.UserException;
 import SKT.demo.model.dto.SignInDto;
 import SKT.demo.model.dto.SignUpDto;
+import SKT.demo.model.entity.Friendship;
 import SKT.demo.model.entity.User;
 import SKT.demo.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 
 import static SKT.demo.exception.message.UserErrorMessage.*;
 
@@ -24,6 +27,7 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
 
+    @Transactional
     public User signUp (SignUpDto signUpDto) {
         if (userRepository.findByUserId(signUpDto.getUserId()).isPresent()) {
             throw new UserException(ALREADY_REGISTERED);
@@ -33,10 +37,16 @@ public class UserService {
             throw new UserException(DUPLICATED_NICKNAME);
         }
 
+        Friendship friendship = Friendship.builder()
+                .userId(signUpDto.getUserId())
+                .friendList(new ArrayList<User>())
+                .build();
+
         User user = User.builder()
                 .userId(signUpDto.getUserId())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .nickname(signUpDto.getNickname())
+                .friendship(friendship)
                 .build();
 
         userRepository.save(user);
