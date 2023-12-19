@@ -1,7 +1,7 @@
 package SKT.demo.config;
 
+import SKT.demo.exception.error.UserException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 import java.util.Date;
+
+import static SKT.demo.exception.message.UserErrorMessage.INVALID_TOKEN;
 
 @Component
 @RequiredArgsConstructor
@@ -68,9 +70,8 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
-        } catch (JwtException e) {
-            throw new RuntimeException();
-            //TODO throw new MemberException(INVALID_TOKEN);
+        } catch (UserException e) {
+            throw new UserException(INVALID_TOKEN);
         }
     }
     public Authentication getAuthenticationByAccessToken(String access_token) {
@@ -87,8 +88,7 @@ public class JwtTokenProvider {
             byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedPayload);
             return new String(decodedBytes);
         } else {
-            throw new RuntimeException();
-      //TODO      throw new UserException(INVALID_TOKEN);
+            throw new UserException(INVALID_TOKEN);
         }
     }
 
@@ -96,9 +96,8 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
-        } catch (JwtException e) {
-            throw new RuntimeException();
-            //TODO throw new UserException(INVALID_TOKEN);
+        } catch (UserException e) {
+            throw new UserException(INVALID_TOKEN);
         }
     }
 
