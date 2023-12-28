@@ -25,4 +25,7 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id")
     private Friendship friendship;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "id")
+    private Favorite favorite;
 }
