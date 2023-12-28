@@ -4,7 +4,6 @@ import SKT.demo.model.dto.SignInDto;
 import SKT.demo.model.dto.SignUpDto;
 import SKT.demo.model.entity.User;
 import SKT.demo.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

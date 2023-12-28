@@ -4,8 +4,11 @@ import SKT.demo.config.JwtTokenProvider;
 import SKT.demo.exception.error.UserException;
 import SKT.demo.model.dto.SignInDto;
 import SKT.demo.model.dto.SignUpDto;
+import SKT.demo.model.entity.Favorite;
 import SKT.demo.model.entity.Friendship;
 import SKT.demo.model.entity.User;
+import SKT.demo.repository.FavoriteRepository;
+import SKT.demo.repository.FriendshipRepository;
 import SKT.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +29,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final FriendshipRepository friendshipRepository;
+    private final FavoriteRepository favoriteRepository;
+
 
     @Transactional
     public User signUp (SignUpDto signUpDto) {
@@ -41,12 +47,20 @@ public class UserService {
                 .userId(signUpDto.getUserId())
                 .friendList(new ArrayList<User>())
                 .build();
+        Favorite favorite = Favorite.builder()
+                .userId(signUpDto.getUserId())
+                .favoriteList(new ArrayList<User>())
+                .build();
+
+        favoriteRepository.save(favorite);
+        friendshipRepository.save(friendship);
 
         User user = User.builder()
                 .userId(signUpDto.getUserId())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .nickname(signUpDto.getNickname())
                 .friendship(friendship)
+                .favorite(favorite)
                 .build();
 
         userRepository.save(user);
