@@ -6,10 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class FavoriteController {
     private final FavoriteService favoriteService;
 
-    @PostMapping("/add")
+    @PostMapping("/friend")
     public ResponseEntity<Favorite> addFavorite(HttpServletRequest request, @RequestParam @Valid String nickname) {
         return ResponseEntity.ok(favoriteService.addFavorite(request, nickname));
+    }
+
+    @GetMapping("/check")
+    public boolean checkFavorite(HttpServletRequest request, @RequestParam @Valid String nickname) {
+        return favoriteService.checkFavorite(request, nickname);
     }
 }

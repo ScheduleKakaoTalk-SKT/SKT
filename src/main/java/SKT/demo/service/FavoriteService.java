@@ -52,13 +52,46 @@ public class FavoriteService {
 
         Favorite favorite = user.getFavorite();
 
-        if(favorite.getFavoriteList().contains(friend)) {
-            throw new FriendException(ALREADY_FAVORITE);
+        if(favorite.getFavoriteList().contains(friend)) { // 이미 추가된 유저면 즐겨찾기 해제로 로직 변경
+            favorite.deleteFavorite(user);
+            favoriteRepository.save(favorite);
+        } else {
+            favorite.addFavorite(friend);
+            favoriteRepository.save(favorite);
+        }
+        return favorite;
+    }
+
+    public boolean checkFavorite(HttpServletRequest request, String nickname) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String userId = jwtTokenProvider.getPayload(token);
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+
+        User friend = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+
+        Friendship userFriends = user.getFriendship();
+
+        boolean isFriend = false;
+        for (User findUser : userFriends.getFriendList()) {
+            if(findUser.getNickname().equals(friend.getNickname())) {
+                isFriend = true;
+                break;
+            }
         }
 
-        favorite.addFriend(friend);
-        favoriteRepository.save(favorite);
+        if(!isFriend) {
+            throw new FriendException(NOT_FRIEND);
+        }
 
-        return favorite;
+        Favorite favorite = user.getFavorite();
+
+        if(favorite.getFavoriteList().contains(friend)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
