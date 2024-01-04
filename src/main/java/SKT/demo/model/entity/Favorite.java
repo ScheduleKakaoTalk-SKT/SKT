@@ -1,5 +1,6 @@
 package SKT.demo.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
@@ -18,10 +19,15 @@ import java.util.List;
 public class Favorite {
     private Long id;
     private String userId;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY)
     private List<User> favoriteList;
 
-    public void addFriend(User user) {
+    public void addFavorite(User user) {
         this.favoriteList.add(user);
+    }
+
+    public void deleteFavorite(User user) {
+        this.favoriteList.remove(user);
     }
 }
